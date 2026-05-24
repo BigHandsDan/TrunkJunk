@@ -1,14 +1,11 @@
 import { z } from "zod";
 
 export const ListingCategory = z.enum([
-  "furniture",
+  "standard",
+  "scrap",
+  "parts",
   "electronics",
-  "appliance",
-  "tools",
-  "fitness",
-  "home_goods",
-  "outdoor",
-  "other",
+  "household",
 ]);
 export type ListingCategory = z.infer<typeof ListingCategory>;
 

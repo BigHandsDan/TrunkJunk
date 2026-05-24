@@ -9,17 +9,9 @@ import { supabase } from "@/lib/supabase";
 import { useEnsureLocation } from "@/hooks/useLocation";
 import { useLocation } from "@/lib/store";
 import { Colors, Radii, Spacing, Type } from "@/lib/theme";
-import { CATEGORY_LABELS, formatDistance, type Listing, type ListingCategory } from "@trunkjunk/shared";
+import { CATEGORY_LABELS, CATEGORY_ORDER, formatDistance, type Listing, type ListingCategory } from "@trunkjunk/shared";
 
-const CATEGORIES: (ListingCategory | null)[] = [
-  null,
-  "furniture",
-  "electronics",
-  "appliance",
-  "tools",
-  "fitness",
-  "home_goods",
-];
+const CATEGORIES: (ListingCategory | null)[] = [null, ...CATEGORY_ORDER];
 
 export default function Feed() {
   useEnsureLocation();
