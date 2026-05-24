@@ -40,6 +40,8 @@ export const Listing = z.object({
   buy_now_price: z.number().nullable(),
   thumbnail_key: z.string().nullable(),
   distance_mi: z.number().nullable().optional(),
+  weight_lbs: z.number().nullable().optional(),
+  effective_fee_bps: z.number().int().optional(),
   bid_count: z.number(),
   view_count: z.number(),
   created_at: z.string(),
