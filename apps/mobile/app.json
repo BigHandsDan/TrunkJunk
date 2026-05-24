@@ -1,0 +1,59 @@
+{
+  "expo": {
+    "name": "TrunkJunk",
+    "slug": "trunkjunk",
+    "scheme": "trunkjunk",
+    "version": "0.1.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "automatic",
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#F7F6F2"
+    },
+    "ios": {
+      "bundleIdentifier": "app.trunkjunk.mobile",
+      "supportsTablet": false,
+      "infoPlist": {
+        "NSLocationWhenInUseUsageDescription": "TrunkJunk uses your location to show listings nearby and to coordinate pickups. Your exact location is never shared with other users.",
+        "NSCameraUsageDescription": "Take photos of items you want to list.",
+        "NSPhotoLibraryUsageDescription": "Choose photos of items you want to list."
+      }
+    },
+    "android": {
+      "package": "app.trunkjunk.mobile",
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#F7F6F2"
+      },
+      "permissions": [
+        "ACCESS_COARSE_LOCATION",
+        "ACCESS_FINE_LOCATION",
+        "CAMERA",
+        "READ_EXTERNAL_STORAGE"
+      ]
+    },
+    "web": {
+      "bundler": "metro"
+    },
+    "plugins": [
+      "expo-router",
+      [
+        "expo-location",
+        {
+          "locationAlwaysAndWhenInUsePermission": "TrunkJunk needs your location to find nearby listings."
+        }
+      ],
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "TrunkJunk needs photo access to upload listing images."
+        }
+      ]
+    ],
+    "experiments": {
+      "typedRoutes": true
+    }
+  }
+}
