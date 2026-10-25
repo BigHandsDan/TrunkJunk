@@ -14,7 +14,10 @@ jobs:
         with:
           node-version: "20"
           cache: "npm"
-      - run: npm ci
+      # --ignore-scripts: react-native-screens ships a `postinstall` ("bob build")
+      # meant for its own repo; `bob` is not available to consumers, so it fails
+      # under npm. Typechecking needs no native builds.
+      - run: npm ci --ignore-scripts
       - run: npm run typecheck
 
   sql-lint:
