@@ -34,7 +34,7 @@ insert into public.listings (
   ('aaaaaaaa-0000-0000-0000-000000000001', '11111111-1111-1111-1111-111111111111',
    'West Elm leather sofa, like new',
    'Moving sale. 84" three-seat, full-grain leather, two scuffs on back side. Smoke-free home. Buyer arranges pickup.',
-   'furniture', 'like_new', 450, 250, 600,
+   'standard', 'like_new', 450, 250, 600,
    ST_MakePoint(-80.19, 25.77)::geography, '882a100727fffff', 'active'),
   ('aaaaaaaa-0000-0000-0000-000000000002', '44444444-4444-4444-4444-444444444444',
    'Samsung 65" 4K TV (2022)',
@@ -44,11 +44,11 @@ insert into public.listings (
   ('aaaaaaaa-0000-0000-0000-000000000003', '11111111-1111-1111-1111-111111111111',
    'Whirlpool washer + dryer pair',
    'Both working perfectly. About 5 years old. Buyer must handle pickup; 2nd floor walk-up.',
-   'appliance', 'good', 350, 200, null,
+   'electronics', 'good', 350, 200, null,
    ST_MakePoint(-80.18, 25.78)::geography, '882a100731fffff', 'active'),
   ('aaaaaaaa-0000-0000-0000-000000000004', '22222222-2222-2222-2222-222222222222',
    'DeWalt 20V combo kit (drill + impact)',
    'Two batteries, charger, hard case. Used on one renovation.',
-   'tools', 'good', 145, 90, 175,
+   'electronics', 'good', 145, 90, 175,
    ST_MakePoint(-80.20, 25.76)::geography, '882a100725fffff', 'active')
 on conflict (id) do nothing;

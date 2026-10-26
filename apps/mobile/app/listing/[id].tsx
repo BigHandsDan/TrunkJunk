@@ -7,7 +7,7 @@ import MapView, { Polygon, PROVIDER_DEFAULT } from "react-native-maps";
 import { supabase } from "@/lib/supabase";
 import { useAuth, useLocation } from "@/lib/store";
 import { Colors, Radii, Spacing, Type } from "@/lib/theme";
-import { CATEGORY_LABELS, cellPolygon, formatDistance } from "@trunkjunk/shared";
+import { CATEGORY_LABELS, cellPolygon, formatDistance, CATEGORY_FEE_DELTA_BPS } from "@trunkjunk/shared";
 
 export default function ListingDetail() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -98,8 +98,20 @@ export default function ListingDetail() {
         <View style={styles.metaRow}>
           <Text style={styles.metaPill}>{CATEGORY_LABELS[listing.category as keyof typeof CATEGORY_LABELS]}</Text>
           <Text style={styles.metaPill}>{listing.condition.replace("_", " ")}</Text>
+          {listing.weight_lbs != null && (
+            <Text style={styles.metaPill}>{listing.weight_lbs} lbs</Text>
+          )}
           <Text style={styles.metaPill}>{formatDistance(distance)}</Text>
         </View>
+
+        {listing.effective_fee_bps != null && (
+          <Text style={styles.feeHint}>
+            Platform fee: {(listing.effective_fee_bps / 100).toFixed(1)}%
+            {CATEGORY_FEE_DELTA_BPS[listing.category as keyof typeof CATEGORY_FEE_DELTA_BPS] < 0
+              ? ` · ${Math.abs(CATEGORY_FEE_DELTA_BPS[listing.category as keyof typeof CATEGORY_FEE_DELTA_BPS]) / 100}% category discount applied`
+              : ""}
+          </Text>
+        )}
 
         <Text style={styles.section}>About this item</Text>
         <Text style={styles.body2}>{listing.description}</Text>
@@ -211,6 +223,7 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: Colors.text,
   },
+  feeHint: { ...Type.caption, color: Colors.muted, marginTop: Spacing.sm, fontStyle: "italic" },
   section: { ...Type.heading, color: Colors.text, marginTop: Spacing.lg, marginBottom: Spacing.sm },
   body2: { ...Type.body, color: Colors.text, lineHeight: 22 },
   note: { ...Type.caption, color: Colors.muted, marginTop: Spacing.xs, lineHeight: 17 },

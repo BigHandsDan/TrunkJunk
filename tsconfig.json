@@ -17,5 +17,13 @@
       "@trunkjunk/shared/*": ["packages/shared/src/*"]
     }
   },
-  "exclude": ["node_modules", "**/node_modules", "**/dist", "**/.next", "**/.expo"]
+  "exclude": [
+    "node_modules",
+    "**/node_modules",
+    "**/dist",
+    "**/.next",
+    "**/.expo",
+    "apps",
+    "supabase/functions"
+  ]
 }

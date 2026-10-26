@@ -9,17 +9,13 @@ import { supabase } from "@/lib/supabase";
 import { useEnsureLocation } from "@/hooks/useLocation";
 import { useLocation } from "@/lib/store";
 import { Colors, Radii, Spacing, Type } from "@/lib/theme";
-import { CATEGORY_LABELS, formatDistance, type Listing, type ListingCategory } from "@trunkjunk/shared";
+import {
+  CATEGORY_LABELS, CATEGORY_ORDER, formatDistance,
+  type Listing, type ListingCategory,
+} from "@trunkjunk/shared";
+import { FilterSheet, DEFAULT_FILTERS, hasActiveFilters, type FeedFilters } from "@/components/FilterSheet";
 
-const CATEGORIES: (ListingCategory | null)[] = [
-  null,
-  "furniture",
-  "electronics",
-  "appliance",
-  "tools",
-  "fitness",
-  "home_goods",
-];
+const CATEGORIES: (ListingCategory | null)[] = [null, ...CATEGORY_ORDER];
 
 export default function Feed() {
   useEnsureLocation();
@@ -28,6 +24,8 @@ export default function Feed() {
   const [items, setItems] = useState<Listing[]>([]);
   const [refreshing, setRefreshing] = useState(false);
   const [cat, setCat] = useState<ListingCategory | null>(null);
+  const [filters, setFilters] = useState<FeedFilters>(DEFAULT_FILTERS);
+  const [sheetOpen, setSheetOpen] = useState(false);
 
   const load = useCallback(async () => {
     if (lat == null || lng == null) return;
@@ -35,14 +33,27 @@ export default function Feed() {
     const { data, error } = await supabase.rpc("listings_feed", {
       viewer_lat: lat,
       viewer_lng: lng,
-      radius_mi: 25,
+      radius_mi: filters.radiusMi,
       in_category: cat,
+      in_conditions: filters.conditions.length ? filters.conditions : null,
+      min_price: filters.minPrice ? Number(filters.minPrice) : null,
+      max_price: filters.maxPrice ? Number(filters.maxPrice) : null,
+      min_lbs: filters.minLbs ? Number(filters.minLbs) : null,
+      max_lbs: filters.maxLbs ? Number(filters.maxLbs) : null,
+      sort_by: filters.sortBy,
       limit_n: 50,
     });
     setRefreshing(false);
     if (error) return console.warn(error.message);
     setItems((data ?? []) as Listing[]);
-  }, [lat, lng, cat]);
+  }, [lat, lng, cat, filters]);
+
+  // Clear weight filters when leaving scrap/parts category
+  useEffect(() => {
+    if (cat !== "scrap" && cat !== "parts" && (filters.minLbs || filters.maxLbs)) {
+      setFilters((f) => ({ ...f, minLbs: "", maxLbs: "" }));
+    }
+  }, [cat]);
 
   useEffect(() => { load(); }, [load]);
 
@@ -50,13 +61,27 @@ export default function Feed() {
     <SafeAreaView edges={["top"]} style={styles.safe}>
       <View style={styles.header}>
         <Text style={styles.h1}>Find your next find</Text>
-        <Link href="/create" asChild>
-          <TouchableOpacity style={styles.fab}>
-            <MaterialCommunityIcons name="plus" size={22} color="#fff" />
-            <Text style={styles.fabText}>List</Text>
+        <View style={{ flexDirection: "row", gap: 8 }}>
+          <TouchableOpacity style={styles.filterBtn} onPress={() => setSheetOpen(true)}>
+            <MaterialCommunityIcons name="tune-variant" size={20} color={Colors.text} />
+            {hasActiveFilters(filters) && <View style={styles.dot} />}
           </TouchableOpacity>
-        </Link>
+          <Link href="/create" asChild>
+            <TouchableOpacity style={styles.fab}>
+              <MaterialCommunityIcons name="plus" size={22} color="#fff" />
+              <Text style={styles.fabText}>List</Text>
+            </TouchableOpacity>
+          </Link>
+        </View>
       </View>
+
+      <FilterSheet
+        visible={sheetOpen}
+        category={cat}
+        filters={filters}
+        onApply={(f) => { setFilters(f); setSheetOpen(false); }}
+        onClose={() => setSheetOpen(false)}
+      />
 
       <View style={styles.chips}>
         <FlashList
@@ -118,6 +143,7 @@ export default function Feed() {
               </View>
               <Text style={styles.meta} numberOfLines={1}>
                 {CATEGORY_LABELS[item.category]} · {item.condition.replace("_", " ")}
+                {item.weight_lbs ? ` · ${item.weight_lbs} lbs` : ""}
                 {item.bid_count > 0 ? ` · ${item.bid_count} bid${item.bid_count === 1 ? "" : "s"}` : ""}
               </Text>
             </View>
@@ -149,6 +175,15 @@ const styles = StyleSheet.create({
     gap: 4,
   },
   fabText: { color: "#fff", fontWeight: "700" },
+  filterBtn: {
+    width: 40, height: 40, borderRadius: Radii.pill,
+    backgroundColor: Colors.surface, borderColor: Colors.border, borderWidth: 1,
+    alignItems: "center", justifyContent: "center",
+  },
+  dot: {
+    position: "absolute", top: 6, right: 6, width: 8, height: 8, borderRadius: 4,
+    backgroundColor: Colors.primary,
+  },
   chips: { height: 48, paddingHorizontal: Spacing.lg },
   chip: {
     paddingHorizontal: Spacing.md,

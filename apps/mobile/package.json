@@ -18,6 +18,7 @@
     "@stripe/stripe-react-native": "^0.37.0",
     "@supabase/supabase-js": "^2.43.0",
     "@trunkjunk/shared": "*",
+    "base64-arraybuffer": "^1.0.2",
     "date-fns": "^3.6.0",
     "expo": "~51.0.0",
     "expo-constants": "~16.0.0",

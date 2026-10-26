@@ -1,9 +1,15 @@
 -- =============================================================================
 -- Enums
 -- =============================================================================
+-- Junk-type taxonomy. See packages/shared/src/categories.ts for full definitions,
+-- example items, and detection keywords.
+--   standard    -- whole, usable items in fair-to-good shape
+--   scrap       -- items valued for recyclable metal/material (priced by weight)
+--   parts       -- broken/incomplete items kept for harvestable components
+--   electronics -- anything that plugs in or runs on batteries
+--   household   -- everyday non-powered house items (kitchenware, textiles, decor)
 create type listing_category as enum (
-  'furniture', 'electronics', 'appliance', 'tools',
-  'fitness', 'home_goods', 'outdoor', 'other'
+  'standard', 'scrap', 'parts', 'electronics', 'household'
 );
 
 create type listing_condition as enum (
